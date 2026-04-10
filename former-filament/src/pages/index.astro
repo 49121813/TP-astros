@@ -1,0 +1,220 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+
+<Layout title="Pomodoro Pro">
+
+<div class= titulo>
+<h1> Metodo pomodoro</h1>
+</div>
+
+<div class= info>
+<p>La técnica Pomodoro es un método de estudio que consiste en trabajar durante 25 minutos y luego descansar 5 minutos, repitiendo el ciclo para mejorar la concentración y la productividad. </p>
+</div>
+<div class="app">
+
+
+  <!-- MODOS -->
+  <div class="modes">
+    <button onclick="setMode('pomodoro')" id="pomodoro">Pomodoro</button>
+    <button onclick="setMode('short')" id="short">Short Break</button>
+    <button onclick="setMode('long')" id="long">Long Break</button>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer">
+    <h1 id="display">25:00</h1>
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="controls">
+    <button class="start" onclick="startTimer()">START</button>
+    <button onclick="pauseTimer()">PAUSE</button>
+    <button onclick="resetTimer()">RESET</button>
+  </div>
+
+  <p id="status"></p>
+
+</div>
+
+<script is:inline>
+  let modos = {
+    pomodoro: 1500,
+    short: 300,
+    long: 900
+  };
+
+  let colores = {
+    pomodoro: "#b12323",
+    short: "#f04419",
+    long: "#db5714"
+  };
+
+  let modoActual = "pomodoro";
+  let restante = modos[modoActual];
+  let interval = null;
+  let pomodoros = 0;
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  }
+
+  function updateDisplay() {
+    document.getElementById("display").innerText = formatTime(restante);
+    document.getElementById("status").innerText =
+      `Modo: ${modoActual} | Pomodoros: ${pomodoros}`;
+  }
+
+  function updateUI() {
+    document.body.style.background = colores[modoActual];
+
+    document.querySelectorAll(".modes button").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    document.getElementById(modoActual).classList.add("active");
+  }
+
+  function setMode(modo) {
+    clearInterval(interval);
+    interval = null;
+    modoActual = modo;
+    restante = modos[modo];
+    updateDisplay();
+    updateUI();
+  }
+
+  function nextMode() {
+    if (modoActual === "pomodoro") {
+      pomodoros++;
+
+      if (pomodoros % 4 === 0) {
+        modoActual = "long";
+      } else {
+        modoActual = "short";
+      }
+    } else {
+      modoActual = "pomodoro";
+    }
+
+    restante = modos[modoActual];
+    updateDisplay();
+    updateUI();
+    startTimer();
+  }
+
+  function startTimer() {
+    if (interval) return;
+
+    interval = setInterval(() => {
+      restante--;
+      updateDisplay();
+
+      if (restante <= 0) {
+        clearInterval(interval);
+        interval = null;
+        nextMode();
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(interval);
+    interval = null;
+  }
+
+  function resetTimer() {
+    clearInterval(interval);
+    interval = null;
+    restante = modos[modoActual];
+    updateDisplay();
+  }
+
+  window.onload = () => {
+    updateDisplay();
+    updateUI();
+  };
+</script>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background 0.5s;
+  }
+
+
+  .app {
+    max-width: 400px;
+    margin: 100px auto;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    padding: 30px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+  }
+.titulo {
+  margin-top: 40px;
+}
+.info {
+	 max-width: 800px;
+  margin: 0 auto;
+}
+  .modes button {
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    transition: 0.3s;
+  }
+
+  .modes button.active {
+    background: white;
+    color: black;
+    font-weight: bold;
+  }
+
+  .timer h1 {
+    font-size: 80px;
+    margin: 20px 0;
+    color: white;
+  }
+
+  .controls button {
+    margin: 5px;
+    padding: 12px 20px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .start {
+    background: white;
+    color: black;
+  }
+
+  #status {
+    margin-top: 15px;
+    color: white;
+  }
+
+  /* 📱 Responsive */
+  @media (max-width: 600px) {
+    .app {
+      margin: 50px 20px;
+    }
+
+    .timer h1 {
+      font-size: 60px;
+    }
+  }
+</style>
+
+</Layout>

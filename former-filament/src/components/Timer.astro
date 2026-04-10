@@ -1,0 +1,12 @@
+---
+const { tiempo = 1500, nombre = "Timer" } = Astro.props;
+---
+
+<div class="card">
+  <h2>{nombre}</h2>
+  <h1 id={`display-${nombre}`}>25:00</h1>
+
+  <button onclick={`startTimer("${nombre}", ${tiempo})`}>▶️ Empezar</button>
+  <button onclick={`pauseTimer("${nombre}")`}>⏸️ Pausar</button>
+  <button onclick={`resetTimer("${nombre}", ${tiempo})`}>🔄 Reset</button>
+</div>

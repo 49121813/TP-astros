@@ -1,0 +1,38 @@
+<!doctype html>
+---
+const { title = "Temporizador App" } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        text-align: center;
+      }
+
+      button {
+        margin: 5px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .card {
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 20px;
+        margin: 20px auto;
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
